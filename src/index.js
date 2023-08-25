@@ -27,28 +27,32 @@ fetchBreeds()
         select: selector,
         data: arrBreedsId
     });
-    })
-.catch(onFetchError);
 
-selector.addEventListener('change', onSelectBreed);
+    // Відображення інформації про кота при виборі породи
+    selector.addEventListener('change', onSelectBreed);
+})
+    .catch(onFetchError);
 
 function onSelectBreed(event) {
-    loader.classList.replace('is-hidden', 'loader');
-    selector.classList.add('is-hidden');
-    divCatInfo.classList.add('is-hidden');
-
     const breedId = event.currentTarget.value;
-    fetchCatByBreed(breedId)
-    .then(data => {
-        loader.classList.replace('loader', 'is-hidden');
-        selector.classList.remove('is-hidden');
-        const { url, breeds } = data[0];
+
+    if (breedId) {
+        loader.classList.replace('is-hidden', 'loader');
+        selector.classList.add('is-hidden');
+        divCatInfo.classList.add('is-hidden');
+          
+        fetchCatByBreed(breedId)
+            .then(data => {
+                loader.classList.replace('loader', 'is-hidden');
+                selector.classList.remove('is-hidden');
+                const { url, breeds } = data[0];
         
-        divCatInfo.innerHTML = `<div class="box-img"><img src="${url}" alt="${breeds[0].name}" width="400"/></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:</b> ${breeds[0].temperament}</p></div>`
-        divCatInfo.classList.remove('is-hidden');
-    })
-    .catch(onFetchError);
-};
+                divCatInfo.innerHTML = `<div class="box-img"><img src="${url}" alt="${breeds[0].name}" width="400"/></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:</b> ${breeds[0].temperament}</p></div>`;
+                divCatInfo.classList.remove('is-hidden');
+            })
+            .catch(onFetchError);
+    }
+}
 
 function onFetchError(error) {
     selector.classList.remove('is-hidden');
